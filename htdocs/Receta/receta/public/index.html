@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receta de Galletas</title>
+    <style>
+        /* Estilos generales del cuerpo de la página */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #3498db; /* Color de fondo del cuerpo */
+            color: #333; /* Color de texto */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Altura del 100% de la ventana */
+        }
+
+        /* Estilos del encabezado */
+        header {
+            background-color: #3498db; /* Color de fondo del encabezado */
+            color: #fff; /* Color de texto del encabezado */
+            text-align: left; /* Alineación de texto a la izquierda */
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Estilos del título principal */
+        h1 {
+            font-size: 2em; /* Tamaño del texto del título principal */
+            margin: 0 auto; /* Centra el título principal */
+        }
+
+        /* Estilos de la imagen */
+        img {
+            max-width: 7em; /* Tamaño máximo de la imagen */
+            height: auto;
+            border-radius: 50%; /* Bordes redondeados */
+            margin-right: 0.5rem; /* Espaciado derecho */
+        }
+
+        /* Estilos de la sección principal */
+        section {
+            max-width: 800px; /* Ancho máximo de la sección principal */
+            margin: 2rem auto;
+            background-color: #fff; /* Color de fondo de la sección principal */
+            padding: 1rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+            border-radius: 8px; /* Bordes redondeados */
+            text-align: left; /* Alineación de texto a la izquierda */
+        }
+
+        /* Estilos de las listas */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <img src="galleta.jpg" alt="Imagen de galletas"> <!-- Imagen del encabezado -->
+    <h1>Receta de Galletas</h1> <!-- Título principal -->
+</header>
+
+<section>
+    <div>
+        <h2>Ingredientes:</h2>
+        <ul>
+            <li>1 taza de harina</li>
+            <li>1/2 taza de azúcar</li>
+            <li>1/2 taza de mantequilla</li>
+            <li>1 huevo</li>
+            <li>1 cucharadita de esencia de vainilla</li>
+            <li>1/2 cucharadita de sal</li>
+            <li>1/2 cucharadita de polvo de hornear</li>
+        </ul>
+
+        <h2>Pasos:</h2>
+        <ol>
+            <li>Mezcla la harina, el azúcar, la sal y el polvo de hornear en un tazón.</li>
+            <li>Añade la mantequilla derretida, el huevo y la esencia de vainilla.</li>
+            <li>Mézclalo todo hasta obtener una masa suave.</li>
+            <li>Forma pequeñas bolas de masa y colócalas en una bandeja para hornear.</li>
+            <li>Hornea a 180°C durante 12-15 minutos.</li>
+            <li>Deja enfriar y ¡disfruta de tus galletas!</li>
+        </ol>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+    new Vue({
+        el: 'body',
+        data: {
+            mensaje: '¡Espero que disfrutes haciendo estas deliciosas galletas!'
+        }
+    });
+</script>
+</body>
+</html>
