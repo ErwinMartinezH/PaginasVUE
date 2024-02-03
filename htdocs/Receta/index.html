@@ -1,11 +1,13 @@
+<!-- index.html -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receta de Galletas</title>
+    <!-- Estilos generales del cuerpo de la página -->
     <style>
-        /* Estilos generales del cuerpo de la página */
         body {
             font-family: Arial, sans-serif;
             background-color: #3498db; /* Color de fondo del cuerpo */
@@ -15,37 +17,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh; /* Altura del 100% de la ventana */
+            min-height: 100vh; /* Altura del 100% de la ventana */
         }
 
         /* Estilos del encabezado */
         header {
             background-color: #3498db; /* Color de fondo del encabezado */
             color: #fff; /* Color de texto del encabezado */
-            text-align: left; /* Alineación de texto a la izquierda */
+            text-align: center; /* Alineación del encabezado al centro */
             padding: 1rem;
             display: flex;
+            flex-direction: column; /* Columna para centrar la imagen y el título */
             align-items: center;
         }
 
         /* Estilos del título principal */
         h1 {
             font-size: 2em; /* Tamaño del texto del título principal */
-            margin: 0 auto; /* Centra el título principal */
+            margin: 0.5rem 0; /* Margen superior e inferior reducido para mejor aspecto en dispositivos móviles */
         }
 
         /* Estilos de la imagen */
         img {
-            max-width: 7em; /* Tamaño máximo de la imagen */
+            max-width: 10em; /* Aumentado el tamaño de la imagen para dispositivos más grandes */
             height: auto;
             border-radius: 50%; /* Bordes redondeados */
-            margin-right: 0.5rem; /* Espaciado derecho */
+            margin-top: 0.5rem; /* Espaciado superior */
         }
 
         /* Estilos de la sección principal */
         section {
             max-width: 800px; /* Ancho máximo de la sección principal */
-            margin: 2rem auto;
+            margin: 2rem;
             background-color: #fff; /* Color de fondo de la sección principal */
             padding: 1rem;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
@@ -65,11 +68,13 @@
     </style>
 </head>
 <body>
+<!-- Encabezado con imagen y título -->
 <header>
     <img src="galleta.jpg" alt="Imagen de galletas"> <!-- Imagen del encabezado -->
     <h1>Receta de Galletas</h1> <!-- Título principal -->
 </header>
 
+<!-- Sección principal con ingredientes y pasos -->
 <section>
     <div>
         <h2>Ingredientes:</h2>
@@ -95,8 +100,10 @@
     </div>
 </section>
 
+<!-- Script de Vue.js -->
 <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 <script>
+    // Inicialización de Vue.js
     new Vue({
         el: 'body',
         data: {
