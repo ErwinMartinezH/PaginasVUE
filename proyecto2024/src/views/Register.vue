@@ -12,31 +12,34 @@
         placeholder="Capture su No. de Control"/>
         <br />
       <label for="nombre" align="left">Nombre:</label>
+      <!--se hace las letras mayusculas en automatico en el input-->
       <input
         type="text"
         v-model="nombre"
         required=""
         placeholder="Capture Nombre usando letras MAYUSCULAS"
         title="Capture su Nombre usando letras MAYUSCULAS, Ej: MARTHA ó BIBIANA"
-        pattern="[A-ZÁÉÍÓÚÑ ]{2,32}"/>
+        pattern="[A-ZÁÉÍÓÚÑ ]{2,32}"
+        oninput="this.value = this.value.toUpperCase()"
+        />
       <br />
       <label for="apellido" align="left">Apellido:</label>
       <input type="text" v-model="apellido" required=""
         placeholder="Capture Apellidos usando letras MAYUSCULAS"
         title="Capture su Apellidos usando letras MAYUSCULAS, Ej: LOPEZ O RODRIGUEZ"
-        pattern="[A-ZÁÉÍÓÚÑ ]{2,32}" />
+        pattern="[A-ZÁÉÍÓÚÑ ]{2,32}" 
+        oninput="this.value = this.value.toUpperCase()"/>
       <br />
       <label for="telefono" align="left">Telefono:</label>
       <input type="text" v-model="telefono" required=""
-        placeholder="Capture su Telefono ej. 12345678"
-        title="Capture su Telefono ej. 12345678"
-        pattern="[0-9]{8}" />
+        placeholder="Capture su Telefono ej. 2291234567"
+        title="Capture su Telefono ej. 2291234567"
+        pattern="[0-9]{10}" />
       <br />
       <label for="correo" align="left">Correo:</label>
       <input type="text" v-model="correo" required=""
         placeholder="Capture su Correo ej. 0kqj3@example.com"
-        title="Capture su Correo ej. 0kqj3@example.com"
-        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
+        title="Capture su Correo ej. example@example.com" />
       <br />
       <label for="password" align="left">Contraseña:</label>
       <input type="password" v-model="password" required=""
@@ -134,19 +137,41 @@ router-link:hover {
 </style>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "RegisterForm",
   data() {
     return {
-      noControl: "",
-      nombre: "",
-      // Agregar más datos según sea necesario
+      noControl: '',
+      nombre: '',
+      apellido: '',
+      telefono: '',
+      correo: '',
+      password: ''
     };
   },
   methods: {
     register() {
-      // Lógica para enviar datos de registro al servidor
-    },
-  },
+      const alumnoData = {
+        noControl: this.noControl,
+        nombre: this.nombre,
+        apellido: this.apellido,
+        telefono: this.telefono,
+        correo: this.correo,
+        password: this.password
+      };
+
+      axios.post('http://localhost:3000/data/conectar', alumnoData)
+        .then(response => {
+          console.log(response.data);
+          // Aquí puedes manejar la respuesta, como mostrar un mensaje de éxito o redirigir al usuario
+        })
+        .catch(error => {
+          console.error(error);
+          // Manejar errores aquí
+        });
+    }
+  }
 };
 </script>

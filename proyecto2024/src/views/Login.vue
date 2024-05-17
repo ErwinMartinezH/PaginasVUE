@@ -12,7 +12,7 @@
           placeholder="Capture su Contraseña"><br>
         <button type="submit">Iniciar sesión</button>
         <router-link to="/register">¿No tienes cuenta?</router-link>
-        <router-link to="/main">pruebas</router-link>
+        
       </form>
     </div>
   </template>
@@ -88,36 +88,31 @@
 
 <script>
 export default {
-    name: 'LoginForm',
+  name: 'LoginForm',
   data() {
     return {
       noControl: '',
-      password: ''
+      password: '',
     };
   },
   methods: {
-  login() {
-    this.$axios.post('http://localhost:8080/db/login.php', {
-      noControl: this.noControl,
-      password: this.password
-    })
-    .then(response => {
-      console.log(response.data);
-      // Aquí puedes manejar la respuesta del servidor
-      if (response.data.message === 'Inicio de sesión exitoso') {
-        // Redireccionar al usuario a la página principal si el inicio de sesión es exitoso
-        this.$router.push('/main');
-      } else {
-        // Manejar el caso en que las credenciales sean inválidas
-        alert(response.data.error);
-      }
-    })
-    .catch(error => {
-      console.error(error);
-    });
-  }
-}
-
+    login() {
+      this.$api.login(this.noControl, this.password)
+        .then((response) => {
+          console.log(response.data);
+          // Aquí puedes manejar la respuesta del servidor
+          if (response.data.message === 'Inicio de sesión exitoso') {
+            // Redireccionar al usuario a la página principal si el inicio de sesión es exitoso
+            this.$router.push('/main');
+          } else {
+            // Manejar el caso en que las credenciales sean inválidas
+            alert(response.data.error);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+  },
 };
-
 </script>
