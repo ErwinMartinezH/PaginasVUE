@@ -23,8 +23,8 @@
         oninput="this.value = this.value.toUpperCase()"
         />
       <br />
-      <label for="apellido" align="left">Apellido:</label>
-      <input type="text" v-model="apellido" required=""
+      <label for="apellidos" align="left">Apellido:</label>
+      <input type="text" v-model="apellidos" required=""
         placeholder="Capture Apellidos usando letras MAYUSCULAS"
         title="Capture su Apellidos usando letras MAYUSCULAS, Ej: LOPEZ O RODRIGUEZ"
         pattern="[A-ZÁÉÍÓÚÑ ]{2,32}" 
@@ -36,8 +36,8 @@
         title="Capture su Telefono ej. 2291234567"
         pattern="[0-9]{10}" />
       <br />
-      <label for="correo" align="left">Correo:</label>
-      <input type="text" v-model="correo" required=""
+      <label for="email" align="left">Correo:</label>
+      <input type="text" v-model="email" required=""
         placeholder="Capture su Correo ej. 0kqj3@example.com"
         title="Capture su Correo ej. example@example.com" />
       <br />
@@ -47,8 +47,8 @@
         title="Capture su Contraseña" />
       <br />
       <!-- Agregar más campos según sea necesario -->
-      <button type="submit">Registrarse</button>
-      <router-link to="/login"><a>¿Ya tienes cuenta?</a></router-link>
+      <button type="submit" @click="register()">Registrarse</button>
+      <router-link to="/loginAuth"><a>¿Ya tienes cuenta?</a></router-link>
     </form>
   </div>
 </template>
@@ -136,42 +136,49 @@ router-link:hover {
 
 </style>
 
+
 <script>
-import axios from 'axios';
 
 export default {
-  name: "RegisterForm",
+  name: 'RegisterForm',
   data() {
     return {
       noControl: '',
       nombre: '',
-      apellido: '',
+      apellidos: '',
       telefono: '',
-      correo: '',
-      password: ''
+      email: '',
+      password: '',
+      //agregamos status con valor por defecto 1
+      status: 1
     };
   },
   methods: {
     register() {
-      const alumnoData = {
-        noControl: this.noControl,
-        nombre: this.nombre,
-        apellido: this.apellido,
-        telefono: this.telefono,
-        correo: this.correo,
-        password: this.password
-      };
-
-      axios.post('http://localhost:3000/data/conectar', alumnoData)
-        .then(response => {
-          console.log(response.data);
-          // Aquí puedes manejar la respuesta, como mostrar un mensaje de éxito o redirigir al usuario
+      fetch('http://localhost:3000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          noControl: this.noControl,
+          nombre: this.nombre,
+          apellidos: this.apellidos,
+          telefono: this.telefono,
+          email: this.email,
+          password: this.password,
+          status: this.status
         })
-        .catch(error => {
-          console.error(error);
-          // Manejar errores aquí
-        });
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.message === 'Usuario registrado exitosamente') {
+          this.$router.push('/loginAuth');
+        }
+      });
     }
   }
 };
+
 </script>

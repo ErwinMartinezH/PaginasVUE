@@ -3,21 +3,23 @@
       <!-- Barra de menú en la parte superior de la página -->
       <div class="menu-bar">
         <!-- Nombre de usuario -->
-        <a class="menu-item" href="#"><h3>Softdcc</h3></a>
+        <a class="menu-item" href="#">Softdcc</a>
         <!-- Elemento del menú: Unirse a un Grupo -->
         <a class="menu-item" href="/unirgrupo">Unirse a un Grupo</a>
         <!-- Elemento del menú: Cerrar Sesión -->
-        <a href="/login" class="menu-item" type="button">Cerrar Sesión</a>
-        <!-- Elemento del menú: nombre de usuario -->
-        <a class="name-user"><h4>Bienvenido: Juan Ramirez</h4></a>
+        <a @click="Logout()" class="menu-item" type="button">Cerrar Sesión</a>
+        <!-- Elemento del menú: nombre de usuario de la base de datos-->
+        <a class="name-user" ><h4></h4></a>
       </div>
     </div>
   </template>
   
   <script>
   export default {
-    name: 'MenuBarComponent'
-  }
+    name: 'NavbarPage',
+   
+    
+  };
   </script>
   
   <style scoped>
@@ -66,6 +68,11 @@
     border-radius: 5px;
     transition: all 0.3s ease;
   }
+
+/*añadir formato negrita*/
+a{
+  font-weight: bold;
+}
   
   </style>
   

@@ -23,33 +23,6 @@ export default {
     Navbar,
     TableComponent
   },
-  data() {
-    return {
-      tableData: [
-        {
-          id: '2J2',
-          grupo: 'B',
-          materia: 'PROGRAMACION ORIENTADA A OBJETOS',
-          idProfesor: 111,
-          profesor: 'COSS CAMIL DELIO'
-        },
-        {
-          id: '8J4',
-          grupo: 'A',
-          materia: 'PROGRAMACION WEB',
-          idProfesor: 111,
-          profesor: 'COSS CAMIL DELIO'
-        },
-        {
-          id: '2J2',
-          grupo: 'A',
-          materia: 'PROGRAMACION ORIENTADA A OBJETOS',
-          idProfesor: 112,
-          profesor: 'TRUJILLO SALAMANCA JULIA GUADALUPE'
-        }
-      ]
-    }
-  }
 }
 </script>
 

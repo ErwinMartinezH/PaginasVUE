@@ -1,43 +1,32 @@
-<!-- TableComponent.vue -->
+<!--Esta pagina muestra los datos de la base de datos en una tabla, muestra
+id, grupo, materia, id, Profesor, proceso a realizar-->
+
 <template>
-    <div class="card-body">
-      <table id="miTabla" class="dataTable">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Gpo</th>
-            <th>Materia</th>
-            <th>Id</th>
-            <th>Profesor</th>
-            <th colspan="2">Proceso</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in data" :key="index">
-            <td>{{ row.id }}</td>
-            <td>{{ row.grupo }}</td>
-            <td>{{ row.materia }}</td>
-            <td>{{ row.idProfesor }}</td>
-            <td>{{ row.profesor }}</td>
-            <td><a :href="'pasedelista/index.php?idmateria=' + row.id + '&idgrupo=' + row.grupo + '&idprofesor=' + row.idProfesor + '&nombremateria=' + row.materia + '&nombreprofesor=' + row.profesor" class="btn btn-primary">Pasar Lista</a></td>
-            <td><a :href="'asistencia/index.php?idmateria=' + row.id + '&idgrupo=' + row.grupo + '&idprofesor=' + row.idProfesor + '&nombremateria=' + row.materia + '&nombreprofesor=' + row.profesor" class="btn btn-success">Asistencia</a></td>
-          </tr>
-        </tbody>
-        <tfoot></tfoot>
-      </table>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      data: {
-        type: Array,
-        required: true
-      }
-    }
-  }
-  </script>
+  <div class="dataTable">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Grupo</th>
+          <th>Materia</th>
+          <th>ID</th>
+          <th>Profesor</th>
+          <th>Proceso</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="data in tableData" :key="data.id">
+          <td>{{ data.id }}</td>
+          <td>{{ data.grupo }}</td>
+          <td>{{ data.materia }}</td>
+          <td>{{ data.id }}</td>
+          <td>{{ data.profesor }}</td>
+          <td>{{ data.proceso }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
   
   <style>
   /* Estilos CSS necesarios */

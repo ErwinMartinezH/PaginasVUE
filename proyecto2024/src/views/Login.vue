@@ -10,9 +10,8 @@
         <label for="password" align="left">Contraseña:</label>
         <input type="password" v-model="password" required=""
           placeholder="Capture su Contraseña"><br>
-        <button type="submit">Iniciar sesión</button>
+        <button  @click="login()" type="submit">Iniciar sesión</button>
         <router-link to="/register">¿No tienes cuenta?</router-link>
-        
       </form>
     </div>
   </template>
@@ -86,33 +85,38 @@
 
   </style>
 
+<!-- Script para iniciar sesión, para ingresar a la base de datos es por el archivo login.js de la carpeta db
+este script tomara el valor de los inputs No. de control y contraseña y lo envia al archivo login.js para iniciar la sesión,
+luego se redirecciona a la vista principal /main-->
 <script>
 export default {
-  name: 'LoginForm',
-  data() {
-    return {
-      noControl: '',
-      password: '',
-    };
-  },
-  methods: {
-    login() {
-      this.$api.login(this.noControl, this.password)
-        .then((response) => {
-          console.log(response.data);
-          // Aquí puedes manejar la respuesta del servidor
-          if (response.data.message === 'Inicio de sesión exitoso') {
-            // Redireccionar al usuario a la página principal si el inicio de sesión es exitoso
-            this.$router.push('/main');
-          } else {
-            // Manejar el caso en que las credenciales sean inválidas
-            alert(response.data.error);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    name: 'LoginForm',
+    data() {
+        return {
+            noControl: '',
+            password: ''
+        }
     },
-  },
-};
+    methods: {
+        login() {
+            fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    noControl: this.noControl,
+                    password: this.password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data.message === 'Inicio de sesión exitoso') {
+                    this.$router.push('/main')
+                }
+            })
+        }
+    }
+};  
 </script>
