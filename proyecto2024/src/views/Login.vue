@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="login" >
+    <form @submit.prevent="login">
       <h2>Iniciar sesión</h2>
       <div>
         <label for="noControl">Número de Control:</label>
@@ -35,7 +35,11 @@ export default {
         const response = await axios.post('http://localhost:3000/login', {
           noControl: this.noControl,
           password: this.password
-        });
+        }, { withCredentials: true });
+
+        localStorage.setItem('noControl', this.noControl);
+        localStorage.setItem('isAuthenticated', true);
+        
         alert(response.data.message);
         this.$router.push('/main');
       } catch (error) {
@@ -45,77 +49,65 @@ export default {
           this.error = 'Error al iniciar sesión';
         }
       }
-    },
+    }
   }
 };
 </script>
-  
-  <style> /* Estilos CSS */
-  
-  body {
-    background-color: #f2f2f2;
-  }
-  
-  h2 {
-    text-align: center;
-  }
-  
-  form {
-    max-width: 400px;
-    margin: 0 auto;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  input[type="text"],
-  input[type="password"] {
-    width: 95%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    margin-bottom: 10px;
-  }
-  
-  button[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #3e8e41;
-  }
-  
-  a {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-  }
-  
-  router-link {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-  }
 
-  router-link:hover {
-    text-decoration: underline;
-    text-align: center;
-  }
+<style>
+/* Estilos CSS */
 
-  </style>
+body {
+  background-color: #f2f2f2;
+}
 
+h2 {
+  text-align: center;
+}
+
+form {
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 95%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+
+a {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+}
+</style>

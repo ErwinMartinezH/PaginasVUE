@@ -16,6 +16,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
 
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false, maxAge: 60000 }
+}));
 
 const pool = mariadb.createPool({
   host: '127.0.0.1',
@@ -24,7 +30,6 @@ const pool = mariadb.createPool({
   database: 'proyecto2024',
   connectionLimit: 5
 });
-
 
 app.post('/login', async (req, res) => {
   const { noControl, password } = req.body;
@@ -35,10 +40,8 @@ app.post('/login', async (req, res) => {
     conn.release();
 
     if (rows.length > 0) {
-      res.status(200).json({ message: 'Sesión iniciada exitosamente' });
-      localStorage.setItem('noControl', noControl);
-      localStorage.setItem('password', password);
-      localStorage.setItem('isAuthenticated', true);
+      req.session.noControl = noControl; // Guardamos el noControl en la sesión del servidor
+      res.status(200).json({ message: 'Sesión iniciada exitosamente', noControl });
     } else {
       res.status(401).json({ error: 'Credenciales incorrectas' });
     }
@@ -57,8 +60,11 @@ app.get('/logout', (req, res) => {
   });
 });
 
-//endpoint para visualizar el nombre y apellidos del alumno. se requiere una sesion iniciada y el noControl del alumno
 app.get('/alumno', async (req, res) => {
+  if (!req.session.noControl) {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+
   const noControl = req.session.noControl;
   try {
     const conn = await pool.getConnection();
@@ -74,6 +80,28 @@ app.get('/alumno', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener datos del alumno' });
   }
 });
+app.get('/asistencias', async (req, res) => {
+  if (!req.session.noControl) {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+  const noControl = req.session.noControl;
+  try {
+    const conn = await pool.getConnection();
+    const rows = await conn.query('SELECT * FROM vtaalumnogrupos WHERE noControl = ?', [noControl]);
+    conn.release();
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({ error: 'Asistencias no encontradas' });
+    }
+  } catch (error) {
+    console.error('Error al obtener asistencias: ', error);
+    res.status(500).json({ error: 'Error al obtener asistencias' });
+  }
+});
+
+
+
 
 app.listen(3000, () => {
   console.log('Servidor backend iniciado en el puerto 3000');
