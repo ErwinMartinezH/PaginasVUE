@@ -1,6 +1,6 @@
 <template>
-  <div> 
-    <form @submit.prevent="login"><!-- Esta linea es para llamar al metodo login-->
+  <div>
+    <form @submit.prevent="login" >
       <h2>Iniciar sesión</h2>
       <div>
         <label for="noControl">Número de Control:</label>
@@ -13,14 +13,14 @@
       <button type="submit">Iniciar sesión</button>
       <a href="/register">¿No tienes cuenta?</a>
     </form>
-    <p v-if="error">{{ error }}</p><!-- Esta linea es para mostrar el error-->
+    <p v-if="error">{{ error }}</p>
   </div>
 </template>
 
-<script>/*este codigo es para el funcionamiento del login */
-import axios from 'axios'; 
+<script>
+import axios from 'axios';
 
-export default {/*Se define nombre del componente, datos y metodos */
+export default {
   name: 'LoginForm',
   data() {
     return {
@@ -37,7 +37,7 @@ export default {/*Se define nombre del componente, datos y metodos */
           password: this.password
         });
         alert(response.data.message);
-        this.$router.push('/main');//Se redirige a la pagina principal cuando el login es exitoso
+        this.$router.push('/main');
       } catch (error) {
         if (error.response && error.response.status === 401) {
           this.error = 'Credenciales incorrectas';
@@ -45,7 +45,7 @@ export default {/*Se define nombre del componente, datos y metodos */
           this.error = 'Error al iniciar sesión';
         }
       }
-    }
+    },
   }
 };
 </script>

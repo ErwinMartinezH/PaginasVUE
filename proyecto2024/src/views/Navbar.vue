@@ -1,78 +1,90 @@
 <template>
-    <div class="container">
-      <!-- Barra de menú en la parte superior de la página -->
-      <div class="menu-bar">
-        <!-- Nombre de usuario -->
-        <a class="menu-item" href="#">Softdcc</a>
-        <!-- Elemento del menú: Unirse a un Grupo -->
-        <a class="menu-item" href="/unirgrupo">Unirse a un Grupo</a>
-        <!-- Elemento del menú: Cerrar Sesión -->
-        <a @click="Logout()" class="menu-item" type="button">Cerrar Sesión</a>
-        <!-- Elemento del menú: nombre de usuario de la base de datos-->
-        <a class="name-user" ><h4></h4></a>
+    <nav class="navbar">
+      <div class="navbar-left">
+        <button @click="joinGroup">Unirse a un Grupo</button>
+        <button @click="aboutUs">Acerca de</button>
+        <button @click="logout">Salir</button>
       </div>
-    </div>
+      <div class="navbar-right">
+        <span>Bienvenido {{ nombreCompleto }}</span>
+      </div>
+    </nav>
   </template>
   
   <script>
+  import axios from 'axios';
+  
   export default {
-    name: 'NavbarPage',
-   
-    
+    name: 'NavBar',
+    props: ['nombreCompleto'],
+    methods: {
+      joinGroup() {
+        // Implementar la lógica para unirse a un grupo
+        alert('Funcionalidad para unirse a un grupo próximamente');
+      },
+      aboutUs() {
+        // Implementar la lógica para unirse a un grupo
+        alert('Funcionalidad Acerca de próximamente');
+      },
+      async logout() {
+        try {
+          await axios.get('http://localhost:3000/logout', { withCredentials: true });
+          this.$router.push('/loginAuth'); // Redirigir al login después de cerrar sesión
+        } catch (error) {
+          console.error('Error al cerrar sesión:', error);
+        }
+      }
+    }
   };
   </script>
   
   <style scoped>
-  /* Estilos CSS para la barra de menú */
-  .name-user {
-    color: #fff;
-    font-size: 18px;
-    margin-left: 800px;
+  .navbar {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-
-
-  .menu-bar {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    background-color: #000000;
-    padding: 1px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    margin-left: 27px;
-    margin-right: 27px;
+    justify-content: space-between;
+    background-color: #4CAF50;
+    padding: 10px;
+    color: white;
+    margin-top: -18px;
   }
   
-  .menu-item {
-    color: #fff;
+  .navbar-left, .navbar-center, .navbar-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-center button {
     margin-left: 10px;
-    text-decoration: none;
-    align-items: center;
+    margin-right: 10px;
+    background-color: #3e8e41;
+    border: none;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    border-radius: 3px;
   }
   
-  .menu-item:hover {
-    color: #000000;
-    background-color: #fff;
-    padding: 5px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-  }
-  
-  .menu-item:active {
-    color: #000000;
-    background-color: #fff;
-    padding: 5px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
+  .navbar-center button:hover {
+    background-color: #2e6e31;
   }
 
-/*añadir formato negrita*/
-a{
-  font-weight: bold;
-}
+  .button{
+    margin-left: 10px;
+    background-color: #3e8e41;
+    border: none;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    border-radius: 3px;
+  }
   
+  .button:hover {
+    background-color: #2e6e31;
+  }
+
+  .navbar-right span {
+    margin-left: 10px;
+  }
+
   </style>
   

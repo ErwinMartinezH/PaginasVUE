@@ -1,14 +1,21 @@
 const express = require('express');
 const mariadb = require('mariadb');
 const cors = require('cors');
+const session = require('express-session');
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:8080',
+  credentials: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type, Accept'
+};
+
+app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
 
-const usuariosLogueados = {};
 
 const pool = mariadb.createPool({
   host: '127.0.0.1',
@@ -18,16 +25,20 @@ const pool = mariadb.createPool({
   connectionLimit: 5
 });
 
-// Endpoint para iniciar sesión
+
 app.post('/login', async (req, res) => {
   const { noControl, password } = req.body;
+
   try {
     const conn = await pool.getConnection();
     const rows = await conn.query('SELECT * FROM alumnos WHERE noControl = ? AND password = ?', [noControl, password]);
     conn.release();
+
     if (rows.length > 0) {
-      usuariosLogueados[req.sessionID] = noControl;
       res.status(200).json({ message: 'Sesión iniciada exitosamente' });
+      localStorage.setItem('noControl', noControl);
+      localStorage.setItem('password', password);
+      localStorage.setItem('isAuthenticated', true);
     } else {
       res.status(401).json({ error: 'Credenciales incorrectas' });
     }
@@ -37,37 +48,24 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Endpoint para registro
-app.post('/register', async (req, res) => {
-  const { noControl, nombre, apellidos, telefono, email, password, status } = req.body;
-  try {
-    const conn = await pool.getConnection();
-    await conn.query('INSERT INTO alumnos (noControl, nombre, apellidos, telefono, email, password, status) VALUES (?, ?, ?, ?, ?, ?, ?)', [noControl, nombre, apellidos, telefono, email, password, status]);
-    conn.release();
-    res.status(200).json({ message: 'Usuario registrado exitosamente' });
-  } catch (error) {
-    console.error('Error al registrar el usuario: ', error);
-    res.status(500).json({ error: 'Error al registrar el usuario' });
-  }
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Error al cerrar sesión' });
+    }
+    res.status(200).json({ message: 'Sesión cerrada exitosamente' });
+  });
 });
 
-// Endpoint para obtener los datos del alumno y sus materias
-app.get('/alumno/materias', async (req, res) => {
-  const noControl = req.headers['nocontrol']; // Obtiene el número de control del encabezado de la solicitud
+//endpoint para visualizar el nombre y apellidos del alumno. se requiere una sesion iniciada y el noControl del alumno
+app.get('/alumno', async (req, res) => {
+  const noControl = req.session.noControl;
   try {
     const conn = await pool.getConnection();
-    const alumno = await conn.query('SELECT * FROM alumnos WHERE noControl = ?', [noControl]);
-    const materias = await conn.query(`
-      SELECT m.idmateria, m.nombre AS materia, g.idgrupo, concat(p.apellidos, ' ', p.nombre) AS profesor
-      FROM alumnogrupos ag
-      JOIN materias m ON ag.idmateria = m.idmateria
-      JOIN profesorgrupos pg ON m.idmateria = pg.idmateria AND ag.idgrupo = pg.idgrupo
-      JOIN profesores p ON pg.idprofesor = p.idprofesor
-      WHERE ag.noControl = ?
-    `, [noControl]);
+    const rows = await conn.query('SELECT nombre, apellidos FROM alumnos WHERE noControl = ?', [noControl]);
     conn.release();
-    if (alumno.length > 0) {
-      res.status(200).json({ alumno: alumno[0], materias });
+    if (rows.length > 0) {
+      res.status(200).json({ nombre: rows[0].nombre, apellidos: rows[0].apellidos });
     } else {
       res.status(404).json({ error: 'Alumno no encontrado' });
     }
@@ -77,15 +75,6 @@ app.get('/alumno/materias', async (req, res) => {
   }
 });
 
-// Endpoint para cerrar sesión
-app.get('/logout', (req, res) => {
-  // Borrar el número de control de la variable de sesión
-  delete usuariosLogueados[req.sessionID];
-  res.redirect('/login');
-});
-
-
-// Iniciar servidor
 app.listen(3000, () => {
   console.log('Servidor backend iniciado en el puerto 3000');
 });
