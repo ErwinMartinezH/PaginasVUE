@@ -1,22 +1,56 @@
 <template>
-    <div>
-      <form @submit.prevent="login">
-        <label for="title" text-align="center"><h2>Modulo Alumno</h2></label>
-        <label for="noControl" align="left">Número de control:</label>
-        <input type="text" v-model="noControl" required=""
-          title="Ingresa tu número de control ej. E20021244 o 20021244"
-          pattern="E?[0-9]{8}"
-          placeholder="Capture su No. de Control"><br>
-        <label for="password" align="left">Contraseña:</label>
-        <input type="password" v-model="password" required=""
-          placeholder="Capture su Contraseña"><br>
-        <button  @click="login()" type="submit">Iniciar sesión</button>
-        <router-link to="/register">¿No tienes cuenta?</router-link>
-      </form>
-    </div>
-  </template>
+  <div> 
+    <form @submit.prevent="login"><!-- Esta linea es para llamar al metodo login-->
+      <h2>Iniciar sesión</h2>
+      <div>
+        <label for="noControl">Número de Control:</label>
+        <input type="text" v-model="noControl" id="noControl" required>
+      </div>
+      <div>
+        <label for="password">Contraseña:</label>
+        <input type="password" v-model="password" id="password" required>
+      </div>
+      <button type="submit">Iniciar sesión</button>
+      <a href="/register">¿No tienes cuenta?</a>
+    </form>
+    <p v-if="error">{{ error }}</p><!-- Esta linea es para mostrar el error-->
+  </div>
+</template>
+
+<script>/*este codigo es para el funcionamiento del login */
+import axios from 'axios'; 
+
+export default {/*Se define nombre del componente, datos y metodos */
+  name: 'LoginForm',
+  data() {
+    return {
+      noControl: '',
+      password: '',
+      error: ''
+    };
+  },
+  methods: {
+    async login() {
+      try {
+        const response = await axios.post('http://localhost:3000/login', {
+          noControl: this.noControl,
+          password: this.password
+        });
+        alert(response.data.message);
+        this.$router.push('/main');//Se redirige a la pagina principal cuando el login es exitoso
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          this.error = 'Credenciales incorrectas';
+        } else {
+          this.error = 'Error al iniciar sesión';
+        }
+      }
+    }
+  }
+};
+</script>
   
-  <style>
+  <style> /* Estilos CSS */
   
   body {
     background-color: #f2f2f2;
@@ -85,38 +119,3 @@
 
   </style>
 
-<!-- Script para iniciar sesión, para ingresar a la base de datos es por el archivo login.js de la carpeta db
-este script tomara el valor de los inputs No. de control y contraseña y lo envia al archivo login.js para iniciar la sesión,
-luego se redirecciona a la vista principal /main-->
-<script>
-export default {
-    name: 'LoginForm',
-    data() {
-        return {
-            noControl: '',
-            password: ''
-        }
-    },
-    methods: {
-        login() {
-            fetch('http://localhost:3000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    noControl: this.noControl,
-                    password: this.password
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                if (data.message === 'Inicio de sesión exitoso') {
-                    this.$router.push('/main')
-                }
-            })
-        }
-    }
-};  
-</script>

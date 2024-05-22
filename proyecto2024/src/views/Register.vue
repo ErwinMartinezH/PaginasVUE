@@ -10,9 +10,8 @@
         title="Ingresa tu número de control ej. E20021244 o 20021244"
         pattern="E?[0-9]{8}"
         placeholder="Capture su No. de Control"/>
-        <br />
+      <br />
       <label for="nombre" align="left">Nombre:</label>
-      <!--se hace las letras mayusculas en automatico en el input-->
       <input
         type="text"
         v-model="nombre"
@@ -20,38 +19,96 @@
         placeholder="Capture Nombre usando letras MAYUSCULAS"
         title="Capture su Nombre usando letras MAYUSCULAS, Ej: MARTHA ó BIBIANA"
         pattern="[A-ZÁÉÍÓÚÑ ]{2,32}"
-        oninput="this.value = this.value.toUpperCase()"
-        />
+        oninput="this.value = this.value.toUpperCase()"/>
       <br />
       <label for="apellidos" align="left">Apellido:</label>
-      <input type="text" v-model="apellidos" required=""
+      <input
+        type="text"
+        v-model="apellidos"
+        required=""
         placeholder="Capture Apellidos usando letras MAYUSCULAS"
         title="Capture su Apellidos usando letras MAYUSCULAS, Ej: LOPEZ O RODRIGUEZ"
-        pattern="[A-ZÁÉÍÓÚÑ ]{2,32}" 
+        pattern="[A-ZÁÉÍÓÚÑ ]{2,32}"
         oninput="this.value = this.value.toUpperCase()"/>
       <br />
       <label for="telefono" align="left">Telefono:</label>
-      <input type="text" v-model="telefono" required=""
+      <input
+        type="text"
+        v-model="telefono"
+        required=""
         placeholder="Capture su Telefono ej. 2291234567"
         title="Capture su Telefono ej. 2291234567"
         pattern="[0-9]{10}" />
       <br />
       <label for="email" align="left">Correo:</label>
-      <input type="text" v-model="email" required=""
-        placeholder="Capture su Correo ej. 0kqj3@example.com"
+      <input
+        type="text"
+        v-model="email"
+        required=""
+        placeholder="Capture su Correo ej. example@example.com"
         title="Capture su Correo ej. example@example.com" />
       <br />
       <label for="password" align="left">Contraseña:</label>
-      <input type="password" v-model="password" required=""
+      <input
+        type="password"
+        v-model="password"
+        required=""
         placeholder="Capture su Contraseña"
         title="Capture su Contraseña" />
       <br />
-      <!-- Agregar más campos según sea necesario -->
-      <button type="submit" @click="register()">Registrarse</button>
+      <button type="submit">Registrarse</button>
       <router-link to="/loginAuth"><a>¿Ya tienes cuenta?</a></router-link>
     </form>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'RegisterForm',
+  data() {
+    return {
+      noControl: '',
+      nombre: '',
+      apellidos: '',
+      telefono: '',
+      email: '',
+      password: '',
+      status: 1
+    };
+  },
+  methods: {
+    async register() {
+      try {
+        const response = await fetch('http://localhost:3000/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            noControl: this.noControl,
+            nombre: this.nombre,
+            apellidos: this.apellidos,
+            telefono: this.telefono,
+            email: this.email,
+            password: this.password,
+            status: this.status
+          })
+        });
+        const data = await response.json();
+        if (data.message === 'Usuario registrado exitosamente') {
+          alert('Usuario registrado exitosamente');
+          this.$router.push('/loginAuth');
+        } else {
+          alert('Error al registrar el usuario');
+        }
+      } catch (error) {
+        console.error('Error al registrar el usuario: ', error);
+        alert('Error al registrar el usuario');
+      }
+    }
+  }
+};
+</script>
 
 <style>
 
@@ -135,50 +192,3 @@ router-link:hover {
 }
 
 </style>
-
-
-<script>
-
-export default {
-  name: 'RegisterForm',
-  data() {
-    return {
-      noControl: '',
-      nombre: '',
-      apellidos: '',
-      telefono: '',
-      email: '',
-      password: '',
-      //agregamos status con valor por defecto 1
-      status: 1
-    };
-  },
-  methods: {
-    register() {
-      fetch('http://localhost:3000/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          noControl: this.noControl,
-          nombre: this.nombre,
-          apellidos: this.apellidos,
-          telefono: this.telefono,
-          email: this.email,
-          password: this.password,
-          status: this.status
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        if (data.message === 'Usuario registrado exitosamente') {
-          this.$router.push('/loginAuth');
-        }
-      });
-    }
-  }
-};
-
-</script>
