@@ -39,12 +39,11 @@ app.post("/register", async (req, res) => {
   try {
     const conn = await pool.getConnection();
     // Verificar si el usuario ya existe
-    const [existingUser] = await conn.query(
+    const rows = await conn.query(
       "SELECT * FROM alumnos WHERE noControl = ?",
       [noControl]
     );
-
-    if (existingUser) {
+    if (rows.length > 0) {
       conn.release();
       return res.status(400).json({ message: "El usuario ya existe" });
     }
@@ -58,7 +57,7 @@ app.post("/register", async (req, res) => {
     res.status(201).json({ message: "Usuario registrado exitosamente" });
   } catch (error) {
     console.error("Error al registrar usuario: ", error);
-    res.status(500).json({ error: "Error al registrar usuario" });
+    res.status(500).json({ error: "Error al registrar usuario", details: error.message });
   }
 });
 

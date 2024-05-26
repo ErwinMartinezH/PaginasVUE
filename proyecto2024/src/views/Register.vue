@@ -95,9 +95,11 @@ export default {
           })
         });
         const data = await response.json();
-        if (data.message === 'Usuario registrado exitosamente') {
-          alert('Usuario registrado exitosamente');
+        if (response.status === 201) {
+          alert(data.message);
           this.$router.push('/loginAuth');
+        } else if (response.status === 400) {
+          alert(data.message);
         } else {
           alert('Error al registrar el usuario');
         }
@@ -111,7 +113,6 @@ export default {
 </script>
 
 <style>
-
 body {
   background-color: #f2f2f2;
 }
@@ -151,7 +152,6 @@ form {
 label {
   display: block;
   margin-bottom: 5px;
-  
 }
 
 input[type="text"],
@@ -166,7 +166,6 @@ input[type="password"] {
 
 button[type="submit"] {
   width: 180px;
-  
   padding: 10px;
   background-color: #4CAF50;
   color: #fff;
@@ -190,5 +189,4 @@ router-link:hover {
   text-decoration: underline;
   text-align: center;
 }
-
 </style>
