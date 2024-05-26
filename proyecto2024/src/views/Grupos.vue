@@ -1,16 +1,13 @@
 <template>
-  <div class="row">
+  <div class="row justify-content-center">
     <div class="card">
-      <div class="card-header bg-dark text-white">
-        <h3 class="text-center">
-          Tus grupos
-          <!--{{ userName }}-->
-        </h3>
+      <div class="card-header bg-dark text-white text-center">
+        <h3>Tus grupos <!--{{ userName }}--></h3>
       </div>
       <div class="card-body">
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary m-0">
           <div class="container">
-            <a class="navbar-brand" href="index.html">Softdcc</a>
+            <a class="navbar-brand" href="NavBar.vue">Softdcc</a>
             <button
               class="navbar-toggler"
               type="button"
@@ -25,20 +22,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a
-                    class="nav-link active"
-                    aria-current="page"
-                    href="MainPage.vue"
-                    >Home</a
-                  >
+                  <a class="nav-link active" aria-current="page" href="MainPage.vue">Home</a>
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="nav-link active"
-                    aria-current="page"
-                    href="insertar.html"
-                    >Alta a un Grupo</a
-                  >
+                  <a class="nav-link active" aria-current="page" href="insertar.html">Alta a un Grupo</a>
                 </li>
                 <li class="nav-item">
                   <button class="btn btn-dark" @click="goBack">Regresar</button>
@@ -60,8 +47,6 @@
 
 <style scoped>
 .row {
-  display: flex;
-  justify-content: center;
   margin: 0;
 }
 
@@ -82,14 +67,6 @@
 
 .navbar {
   margin: 0;
-}
-
-.navbar-brand {
-  color: #fff;
-}
-
-.navbar-toggler {
-  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .nav-link.active {
