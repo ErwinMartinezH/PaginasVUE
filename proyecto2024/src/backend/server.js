@@ -33,6 +33,7 @@ const pool = mariadb.createPool({
   connectionLimit: 5,
 });
 
+/*Ruta para registrar un usuario*/
 app.post("/register", async (req, res) => {
   const { noControl, nombre, apellidos, telefono, email, password, status } = req.body;
 
@@ -61,6 +62,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
+/*Ruta para iniciar sesión*/
 app.post("/login", async (req, res) => {
   const { noControl, password } = req.body;
 
@@ -86,6 +88,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
+/*Ruta para cerrar sesión*/
 app.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -95,6 +98,7 @@ app.get("/logout", (req, res) => {
   });
 });
 
+/*Ruta para obtener datos del usuario logueado*/
 app.get("/alumno", async (req, res) => {
   if (!req.session.noControl) {
     return res.status(401).json({ error: "No autorizado" });
@@ -120,6 +124,8 @@ app.get("/alumno", async (req, res) => {
     res.status(500).json({ error: "Error al obtener datos del alumno" });
   }
 });
+
+/*Ruta para obtener asistencias del usuario logueado*/
 app.get("/asistencias", async (req, res) => {
   if (!req.session.noControl) {
     return res.status(401).json({ error: "No autorizado" });
@@ -143,23 +149,38 @@ app.get("/asistencias", async (req, res) => {
   }
 });
 
-// Ruta para obtener los datos de la materia, grupo y profesor para la fecha y hora actuales
-app.get("/datosPasarLista", async (req, res) => {
+/*Ruta para registrar asistencia*/
+app.post("/registrarAsistencia", async (req, res) => {
+  
+});
+
+/*Ruta para obtener datos para pasar lista*/
+app.get("/datosPasarLista/:idmateria/:idgrupo/:idprofesor", async (req, res) => {
+  if (!req.session.noControl) {
+    return res.status(401).json({ error: "No autorizado" });
+  }
+
+  const { idmateria, idgrupo, idprofesor } = req.params;// Obtener los parámetros de la ruta
+  const noControl = req.session.noControl;
+  
   try {
-    const fecha = new Date().toISOString().split("T")[0]; 
-    const hora = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }); 
-    const query = `
-      SELECT * FROM vtaalumnogrupos
-      WHERE fecha = ? AND hora = ?;
-    `;
-    const [row] = await pool.query(query, [fecha, hora]);
-    res.json(row); 
+    const conn = await pool.getConnection();
+    const rows = await conn.query(
+      "SELECT a.fecha, a.hora, m.nombre AS nombre_materia, m.idmateria, g.idgrupo, p.nombre AS nombre_profesor, p.idprofesor FROM asistencia a INNER JOIN materias m ON a.idmateria = m.idmateria INNER JOIN grupos g ON a.idgrupo = g.idgrupo INNER JOIN profesores p ON a.idprofesor = p.idprofesor WHERE a.noControl = ? AND a.idmateria = ? AND a.idgrupo = ? AND a.idprofesor = ?",
+      [noControl, idmateria, idgrupo, idprofesor]
+    );
+    conn.release();
+    
+    if (rows.length > 0) {
+      res.status(200).json(rows[0]);
+    } else {
+      res.status(404).json({ error: "Datos para pasar lista no encontrados" });
+    }
   } catch (error) {
     console.error("Error al obtener datos para pasar lista:", error);
     res.status(500).json({ error: "Error al obtener datos para pasar lista" });
   }
 });
-
 
 
 // Ruta para obtener las asistencias de una materia con un profesor específico
@@ -189,6 +210,7 @@ app.get("/asistencias/:idmateria/:idgrupo/:idprofesor", async (req, res) => {
   }
 });
 
+/*Ejecutamos el servidor en el puerto 3000*/
 app.listen(3000, () => {
   console.log("Servidor backend iniciado en el puerto 3000");
 });

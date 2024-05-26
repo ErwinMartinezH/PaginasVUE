@@ -1,9 +1,11 @@
 <template>
   <div>
     <div class="main-content">
-      <h1>Página Principal del Alumno</h1>
+      <div class="Title">
+        <h1>Página Principal del Alumno</h1>
+      </div>
+      <!-- NavBar aquí -->
       <NavBar :nombreCompleto="nombreCompleto" />
-      <!-- Aquí va el contenido principal de la página -->
       <table>
         <thead>
           <tr>
@@ -28,7 +30,7 @@
             <td>
               <button
                 @click="
-                  pasarLista(grupo.idmateria, grupo.idgrupo, grupo.idprofesor)
+                  pasarLista(grupo.idmateria, grupo.idgrupo, grupo.idprofesor, grupo.nombremateria, grupo.nombreprofesor)
                 "
                 type="button-primary"
               >
@@ -70,39 +72,45 @@ export default {
     };
   },
   async created() {
-    if (localStorage.getItem("isAuthenticated") !== "true") {
+    if (!localStorage.getItem("noControl")) {
       this.$router.push("/loginAuth");
     } else {
       try {
         const response = await axios.get("http://localhost:3000/alumno", {
           withCredentials: true,
+          params: {
+            noControl: localStorage.getItem("noControl"),
+          },
         });
         this.nombreCompleto = `${response.data.nombre} ${response.data.apellidos}`;
-      } catch (error) {
-        console.error("Error al obtener los datos del alumno:", error);
-        this.$router.push("/loginAuth");
-      }
-      try {
-        const response = await axios.get("http://localhost:3000/asistencias", {
+
+        const responseAsistencias = await axios.get("http://localhost:3000/asistencias", {
           withCredentials: true,
+          params: {
+            noControl: localStorage.getItem("noControl"),
+          },
         });
-        this.grupos = response.data;
+        this.grupos = responseAsistencias.data;
       } catch (error) {
         console.error(
-          "Error al obtener los datos de la tabla de asistencia:",
+          "Error al obtener los datos del alumno o de la tabla de asistencia:",
           error
         );
-        // this.$router.push('/loginAuth');
+        this.$router.push("/loginAuth");
       }
     }
   },
+
   methods: {
-    async pasarLista(idmateria, idgrupo, idprofesor) {
+    async pasarLista(idmateria, idgrupo, idprofesor, nombremateria, nombreprofesor) {
       try {
-        // Redirigir a la página pasarlista.vue y pasar los datos necesarios
+        const now = new Date();
+        const fecha = now.toISOString().split("T")[0];
+        const hora = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+
         this.$router.push({
           path: "/pasarlista",
-          query: { idmateria, idgrupo, idprofesor },
+          query: { idmateria, idgrupo, idprofesor, nombremateria, nombreprofesor, fecha, hora },
         });
       } catch (error) {
         console.error("Error al pasar lista:", error);
@@ -120,7 +128,17 @@ export default {
 </script>
 
 <style scoped>
-/* Agregaremos estilos mas llamativos para el usuario */
+.Title {
+  text-align: center;
+  color: #ffffff;
+  background: #000;
+  padding: 20px;
+  margin-bottom: 5px;
+  margin-top: -40px;
+  border-radius: 5px;
+  margin-left: -20px;
+  margin-right: -20px;
+}
 
 .main-content {
   padding: 20px;
@@ -134,7 +152,7 @@ export default {
 table {
   width: 100%;
   margin-bottom: 20px;
-  margin-top: 20px; 
+  margin-top: 20px;
   border-collapse: separate;
   border-spacing: 0;
   border: 1px solid #ccc;

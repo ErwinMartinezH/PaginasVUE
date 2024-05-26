@@ -1,29 +1,29 @@
 <template>
   <div>
     <div class="main-content">
-    <h1>Asistencias Registradas</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Materia</th>
-          <th>Grupo</th>
-          <th>Fecha</th>
-          <th>Hora</th>
-          <th>Registro</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="asistencia in asistencias" :key="asistencia.reg_fecha">
-          <td>{{ asistencia.idmateria }}</td>
-          <td>{{ asistencia.idgrupo }}</td>
-          <td>{{ asistencia.fecha }}</td>
-          <td>{{ asistencia.hora }}</td>
-          <td>{{ asistencia.fecha}} {{ asistencia.hora }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <button @click="$router.push('/main')">Volver</button>
-  </div>
+      <h1>Asistencias Registradas</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Materia</th>
+            <th>Grupo</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Registro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="asistencia in asistencias" :key="asistencia.reg_fecha">
+            <td>{{ asistencia.idmateria }}</td>
+            <td>{{ asistencia.idgrupo }}</td>
+            <td>{{ asistencia.fecha }}</td>
+            <td>{{ asistencia.hora }}</td>
+            <td>{{ asistencia.fecha }} {{ asistencia.hora }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <button @click="$router.push('/main')">Volver</button>
+    </div>
   </div>
 </template>
 

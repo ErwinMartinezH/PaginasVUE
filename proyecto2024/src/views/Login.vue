@@ -37,6 +37,7 @@ export default {
           password: this.password
         }, { withCredentials: true });
 
+        // Almacena los datos en localStorage
         localStorage.setItem('noControl', this.noControl);
         localStorage.setItem('isAuthenticated', true);
         

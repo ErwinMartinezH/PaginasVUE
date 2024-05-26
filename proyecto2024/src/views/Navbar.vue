@@ -51,7 +51,7 @@ export default {
   background-color: #4caf50;
   padding: 10px;
   color: white;
-  margin-top: -10px;
+  margin-top: 10px;
   border-radius: 10px;
 }
 

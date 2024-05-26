@@ -69,6 +69,7 @@ export default {
           withCredentials: true,
         });
         this.nombreCompleto = `${response.data.nombre} ${response.data.apellidos}`;
+        localStorage.setItem("nombreCompleto", this.nombreCompleto); // Guardar en localStorage
       } catch (error) {
         console.error("Error al obtener los datos del alumno:", error);
         this.$router.push("/loginAuth");

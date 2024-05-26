@@ -19,7 +19,7 @@
         placeholder="Capture Nombre usando letras MAYUSCULAS"
         title="Capture su Nombre usando letras MAYUSCULAS, Ej: MARTHA ó BIBIANA"
         pattern="[A-ZÁÉÍÓÚÑ ]{2,32}"
-        oninput="this.value = this.value.toUpperCase()"/>
+        @input="toUpperCase($event, 'nombre')"/>
       <br />
       <label for="apellidos" align="left">Apellido:</label>
       <input
@@ -29,7 +29,7 @@
         placeholder="Capture Apellidos usando letras MAYUSCULAS"
         title="Capture su Apellidos usando letras MAYUSCULAS, Ej: LOPEZ O RODRIGUEZ"
         pattern="[A-ZÁÉÍÓÚÑ ]{2,32}"
-        oninput="this.value = this.value.toUpperCase()"/>
+        @input="toUpperCase($event, 'apellidos')"/>
       <br />
       <label for="telefono" align="left">Telefono:</label>
       <input
@@ -107,6 +107,9 @@ export default {
         console.error('Error al registrar el usuario: ', error);
         alert('Error al registrar el usuario');
       }
+    },
+    toUpperCase(event, field) {
+      this[field] = event.target.value.toUpperCase();
     }
   }
 };
