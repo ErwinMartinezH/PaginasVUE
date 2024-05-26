@@ -5,7 +5,20 @@ const session = require("express-session");
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:8080",
+  origin: function (origin, callback) {
+    // Lista de orígenes permitidos
+    const allowedOrigins = [
+      "http://localhost:8080",
+      "http://192.168.1.71:8080",
+    ];
+
+    // Si la solicitud no incluye el encabezado 'Origin' o si el origen está permitido, permitir la solicitud
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   allowedHeaders: "Content-Type, Accept",
@@ -21,7 +34,7 @@ app.use(
     secret: "secret",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 60000 },
+    cookie: { secure: false, maxAge: 980000 },
   })
 );
 
@@ -31,35 +44,6 @@ const pool = mariadb.createPool({
   password: "123",
   database: "proyecto2024",
   connectionLimit: 5,
-});
-
-/*Ruta para registrar un usuario*/
-app.post("/register", async (req, res) => {
-  const { noControl, nombre, apellidos, telefono, email, password, status } = req.body;
-
-  try {
-    const conn = await pool.getConnection();
-    // Verificar si el usuario ya existe
-    const rows = await conn.query(
-      "SELECT * FROM alumnos WHERE noControl = ?",
-      [noControl]
-    );
-    if (rows.length > 0) {
-      conn.release();
-      return res.status(400).json({ message: "El usuario ya existe" });
-    }
-
-    // Insertar nuevo usuario
-    await conn.query(
-      "INSERT INTO alumnos (noControl, nombre, apellidos, telefono, email, password, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [noControl, nombre, apellidos, telefono, email, password, status]
-    );
-    conn.release();
-    res.status(201).json({ message: "Usuario registrado exitosamente" });
-  } catch (error) {
-    console.error("Error al registrar usuario: ", error);
-    res.status(500).json({ error: "Error al registrar usuario", details: error.message });
-  }
 });
 
 /*Ruta para iniciar sesión*/
@@ -150,38 +134,89 @@ app.get("/asistencias", async (req, res) => {
 });
 
 /*Ruta para registrar asistencia*/
-app.post("/registrarAsistencia", async (req, res) => {
-  
+app.post("/pasarLista", async (req, res) => {
+  const { noControl, idmateria, idgrupo, idprofesor, fecha, hora } = req.body;
+
+  try {
+    const conn = await pool.getConnection();
+    // Insertamos la nueva asistencia
+    await conn.query(
+      "INSERT INTO asistencia (noControl, idmateria, idgrupo, idprofesor, fecha, hora, reg_fecha, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [noControl, idmateria, idgrupo, idprofesor, fecha, hora, fecha, 1] // reg_fecha es la fecha actual
+    );
+    conn.release();
+    res.status(201).json({ message: "Asistencia registrada exitosamente" });
+  } catch (error) {
+    console.error("Error al registrar asistencia: ", error);
+    res.status(500).json({ error: "Error al registrar asistencia" });
+  }
+});
+
+/*Ruta para registrar un usuario*/
+app.post("/register", async (req, res) => {
+  const { noControl, nombre, apellidos, telefono, email, password, status } =
+    req.body;
+
+  try {
+    const conn = await pool.getConnection();
+    // Verificar si el usuario ya existe
+    const rows = await conn.query("SELECT * FROM alumnos WHERE noControl = ?", [
+      noControl,
+    ]);
+    if (rows.length > 0) {
+      conn.release();
+      return res.status(400).json({ message: "El usuario ya existe" });
+    }
+
+    // Insertar nuevo usuario
+    await conn.query(
+      "INSERT INTO alumnos (noControl, nombre, apellidos, telefono, email, password, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [noControl, nombre, apellidos, telefono, email, password, status]
+    );
+    conn.release();
+    res.status(201).json({ message: "Usuario registrado exitosamente" });
+  } catch (error) {
+    console.error("Error al registrar usuario: ", error);
+    res
+      .status(500)
+      .json({ error: "Error al registrar usuario", details: error.message });
+  }
 });
 
 /*Ruta para obtener datos para pasar lista*/
-app.get("/datosPasarLista/:idmateria/:idgrupo/:idprofesor", async (req, res) => {
-  if (!req.session.noControl) {
-    return res.status(401).json({ error: "No autorizado" });
-  }
-
-  const { idmateria, idgrupo, idprofesor } = req.params;// Obtener los parámetros de la ruta
-  const noControl = req.session.noControl;
-  
-  try {
-    const conn = await pool.getConnection();
-    const rows = await conn.query(
-      "SELECT a.fecha, a.hora, m.nombre AS nombre_materia, m.idmateria, g.idgrupo, p.nombre AS nombre_profesor, p.idprofesor FROM asistencia a INNER JOIN materias m ON a.idmateria = m.idmateria INNER JOIN grupos g ON a.idgrupo = g.idgrupo INNER JOIN profesores p ON a.idprofesor = p.idprofesor WHERE a.noControl = ? AND a.idmateria = ? AND a.idgrupo = ? AND a.idprofesor = ?",
-      [noControl, idmateria, idgrupo, idprofesor]
-    );
-    conn.release();
-    
-    if (rows.length > 0) {
-      res.status(200).json(rows[0]);
-    } else {
-      res.status(404).json({ error: "Datos para pasar lista no encontrados" });
+app.get(
+  "/datosPasarLista/:idmateria/:idgrupo/:idprofesor",
+  async (req, res) => {
+    if (!req.session.noControl) {
+      return res.status(401).json({ error: "No autorizado" });
     }
-  } catch (error) {
-    console.error("Error al obtener datos para pasar lista:", error);
-    res.status(500).json({ error: "Error al obtener datos para pasar lista" });
-  }
-});
 
+    const { idmateria, idgrupo, idprofesor } = req.params; // Obtener los parámetros de la ruta
+    const noControl = req.session.noControl;
+
+    try {
+      const conn = await pool.getConnection();
+      const rows = await conn.query(
+        "SELECT a.fecha, a.hora, m.nombre AS nombre_materia, m.idmateria, g.idgrupo, p.nombre AS nombre_profesor, p.idprofesor FROM asistencia a INNER JOIN materias m ON a.idmateria = m.idmateria INNER JOIN grupos g ON a.idgrupo = g.idgrupo INNER JOIN profesores p ON a.idprofesor = p.idprofesor WHERE a.noControl = ? AND a.idmateria = ? AND a.idgrupo = ? AND a.idprofesor = ?",
+        [noControl, idmateria, idgrupo, idprofesor]
+      );
+      conn.release();
+
+      if (rows.length > 0) {
+        res.status(200).json(rows[0]);
+      } else {
+        res
+          .status(404)
+          .json({ error: "Datos para pasar lista no encontrados" });
+      }
+    } catch (error) {
+      console.error("Error al obtener datos para pasar lista:", error);
+      res
+        .status(500)
+        .json({ error: "Error al obtener datos para pasar lista" });
+    }
+  }
+);
 
 // Ruta para obtener las asistencias de una materia con un profesor específico
 app.get("/asistencias/:idmateria/:idgrupo/:idprofesor", async (req, res) => {

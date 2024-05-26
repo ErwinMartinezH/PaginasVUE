@@ -7,23 +7,17 @@
             <div class="card-body">
                 <nav class="navbar navbar-expand-lg navbar-dark bg-primary m-0">
                     <div class="container">
-                        <a class="navbar-brand" href="NavBar.vue">Softdcc</a>
-                        <button class="navbar-toggler"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#navbarSupportedContent"
-                                aria-controls="navbarSupportedContent"
-                                aria-expanded="false"
-                                aria-label="Toggle navigation">
+                        <a class="navbar-brand" href="index.php">Softdcc</a>
+                        <button class="navbar-toggler" type="button" @click="toggleNavbar">
                             <span class="navbar-toggler-icon"></span>
                         </button>
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <div :class="['collapse navbar-collapse', { show: isNavbarOpen }]">
                             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="MainPage.vue">Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="MainPage.vue" class="btn btn-dark">Regresar</a>
+                                    <router-link to="/router/index.js" class="btn btn-dark">Regresar</router-link>
                                 </li>
                             </ul>
                             <form class="d-flex" role="search">
@@ -33,24 +27,21 @@
                     </div>
                 </nav>
                 <div class="card-body">
-                    <TableComponent :tableData="groups" />
+                    <TableComponent />
                 </div>
             </div>
         </div>
     </div>
 </template>
 
+
 <style scoped>
     .row {
-        display: flex;
-        justify-content: center;
         margin: 0;
     }
 
     .card {
-        width: 100%;
-        max-width: 800px;
-        margin-top: 20px;
+        margin: 20px;
     }
 
     .card-header {
@@ -66,28 +57,58 @@
         margin: 0;
     }
 
-    .navbar-brand {
-        color: #fff;
-    }
-
-    .navbar-toggler {
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .nav-link.active {
-        color: #fff;
+    .navbar-dark .navbar-toggler-icon {
+        background-color: white;
     }
 
     .btn-dark {
-        color: #fff;
         background-color: #343a40;
         border-color: #343a40;
     }
 
     .badge {
-        padding: 0.5em 1em;
-        font-size: 1em;
-        color: #6c757d;
-        background-color: #e9ecef;
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .bg-primary {
+        background-color: #007bff;
+    }
+
+    .text-bg-secondary {
+        background-color: #6c757d;
+    }
+
+    .navbar-nav .nav-item .nav-link.active {
+        color: white;
+    }
+
+    .navbar-brand {
+        color: white;
+    }
+
+    .collapse.show {
+        display: block;
+    }
+
+    .d-flex {
+        display: flex;
+        align-items: center;
+    }
+
+    .m-0 {
+        margin: 0;
+    }
+
+    .me-auto {
+        margin-right: auto;
+    }
+
+    .mb-2 {
+        margin-bottom: .5rem;
+    }
+
+    .mb-lg-0 {
+        margin-bottom: 0;
     }
 </style>

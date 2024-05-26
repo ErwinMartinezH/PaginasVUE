@@ -30,7 +30,13 @@
             <td>
               <button
                 @click="
-                  pasarLista(grupo.idmateria, grupo.idgrupo, grupo.idprofesor, grupo.nombremateria, grupo.nombreprofesor)
+                  pasarLista(
+                    grupo.idmateria,
+                    grupo.idgrupo,
+                    grupo.idprofesor,
+                    grupo.nombremateria,
+                    grupo.nombreprofesor
+                  )
                 "
                 type="button-primary"
               >
@@ -84,12 +90,15 @@ export default {
         });
         this.nombreCompleto = `${response.data.nombre} ${response.data.apellidos}`;
 
-        const responseAsistencias = await axios.get("http://localhost:3000/asistencias", {
-          withCredentials: true,
-          params: {
-            noControl: localStorage.getItem("noControl"),
-          },
-        });
+        const responseAsistencias = await axios.get(
+          "http://localhost:3000/asistencias",
+          {
+            withCredentials: true,
+            params: {
+              noControl: localStorage.getItem("noControl"),
+            },
+          }
+        );
         this.grupos = responseAsistencias.data;
       } catch (error) {
         console.error(
@@ -102,15 +111,33 @@ export default {
   },
 
   methods: {
-    async pasarLista(idmateria, idgrupo, idprofesor, nombremateria, nombreprofesor) {
+    async pasarLista(
+      idmateria,
+      idgrupo,
+      idprofesor,
+      nombremateria,
+      nombreprofesor
+    ) {
       try {
         const now = new Date();
         const fecha = now.toISOString().split("T")[0];
-        const hora = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+        const hora = now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
 
         this.$router.push({
           path: "/pasarlista",
-          query: { idmateria, idgrupo, idprofesor, nombremateria, nombreprofesor, fecha, hora },
+          query: {
+            idmateria,
+            idgrupo,
+            idprofesor,
+            nombremateria,
+            nombreprofesor,
+            fecha,
+            hora,
+          },
         });
       } catch (error) {
         console.error("Error al pasar lista:", error);

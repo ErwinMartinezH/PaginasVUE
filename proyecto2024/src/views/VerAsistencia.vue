@@ -2,6 +2,7 @@
   <div>
     <div class="main-content">
       <h1>Asistencias Registradas</h1>
+      <NavBar :nombreCompleto="nombreCompleto" />
       <table>
         <thead>
           <tr>
@@ -28,10 +29,14 @@
 </template>
 
 <script>
+import NavBar from "./NavBar.vue";
 import axios from "axios";
 
 export default {
   name: "VerAsistencia",
+  components: {
+    NavBar,
+  },
   data() {
     return {
       asistencias: [],
@@ -71,6 +76,23 @@ th {
 
 button {
   margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3e8e41;
+}
+
+button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
 }
 
 h1 {
@@ -94,4 +116,5 @@ h1 {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border: 1px solid #ccc;
 }
+
 </style>

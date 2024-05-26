@@ -9,7 +9,8 @@
         required=""
         title="Ingresa tu número de control ej. E20021244 o 20021244"
         pattern="E?[0-9]{8}"
-        placeholder="Capture su No. de Control"/>
+        placeholder="Capture su No. de Control"
+      />
       <br />
       <label for="nombre" align="left">Nombre:</label>
       <input
@@ -19,7 +20,8 @@
         placeholder="Capture Nombre usando letras MAYUSCULAS"
         title="Capture su Nombre usando letras MAYUSCULAS, Ej: MARTHA ó BIBIANA"
         pattern="[A-ZÁÉÍÓÚÑ ]{2,32}"
-        @input="toUpperCase($event, 'nombre')"/>
+        @input="toUpperCase($event, 'nombre')"
+      />
       <br />
       <label for="apellidos" align="left">Apellido:</label>
       <input
@@ -29,7 +31,8 @@
         placeholder="Capture Apellidos usando letras MAYUSCULAS"
         title="Capture su Apellidos usando letras MAYUSCULAS, Ej: LOPEZ O RODRIGUEZ"
         pattern="[A-ZÁÉÍÓÚÑ ]{2,32}"
-        @input="toUpperCase($event, 'apellidos')"/>
+        @input="toUpperCase($event, 'apellidos')"
+      />
       <br />
       <label for="telefono" align="left">Telefono:</label>
       <input
@@ -38,7 +41,8 @@
         required=""
         placeholder="Capture su Telefono ej. 2291234567"
         title="Capture su Telefono ej. 2291234567"
-        pattern="[0-9]{10}" />
+        pattern="[0-9]{10}"
+      />
       <br />
       <label for="email" align="left">Correo:</label>
       <input
@@ -46,7 +50,8 @@
         v-model="email"
         required=""
         placeholder="Capture su Correo ej. example@example.com"
-        title="Capture su Correo ej. example@example.com" />
+        title="Capture su Correo ej. example@example.com"
+      />
       <br />
       <label for="password" align="left">Contraseña:</label>
       <input
@@ -54,7 +59,8 @@
         v-model="password"
         required=""
         placeholder="Capture su Contraseña"
-        title="Capture su Contraseña" />
+        title="Capture su Contraseña"
+      />
       <br />
       <button type="submit">Registrarse</button>
       <router-link to="/loginAuth"><a>¿Ya tienes cuenta?</a></router-link>
@@ -64,25 +70,25 @@
 
 <script>
 export default {
-  name: 'RegisterForm',
+  name: "RegisterForm",
   data() {
     return {
-      noControl: '',
-      nombre: '',
-      apellidos: '',
-      telefono: '',
-      email: '',
-      password: '',
-      status: 1
+      noControl: "",
+      nombre: "",
+      apellidos: "",
+      telefono: "",
+      email: "",
+      password: "",
+      status: 1,
     };
   },
   methods: {
     async register() {
       try {
-        const response = await fetch('http://localhost:3000/register', {
-          method: 'POST',
+        const response = await fetch("http://localhost:3000/register", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             noControl: this.noControl,
@@ -91,27 +97,27 @@ export default {
             telefono: this.telefono,
             email: this.email,
             password: this.password,
-            status: this.status
-          })
+            status: this.status,
+          }),
         });
         const data = await response.json();
         if (response.status === 201) {
           alert(data.message);
-          this.$router.push('/loginAuth');
+          this.$router.push("/loginAuth");
         } else if (response.status === 400) {
           alert(data.message);
         } else {
-          alert('Error al registrar el usuario');
+          alert("Error al registrar el usuario");
         }
       } catch (error) {
-        console.error('Error al registrar el usuario: ', error);
-        alert('Error al registrar el usuario');
+        console.error("Error al registrar el usuario: ", error);
+        alert("Error al registrar el usuario");
       }
     },
     toUpperCase(event, field) {
       this[field] = event.target.value.toUpperCase();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -170,7 +176,7 @@ input[type="password"] {
 button[type="submit"] {
   width: 180px;
   padding: 10px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: #fff;
   font-size: 16px;
   border: none;

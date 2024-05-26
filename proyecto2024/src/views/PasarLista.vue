@@ -47,7 +47,7 @@ export default {
       fecha: "",
       hora: "",
       nombremateria: "",
-      nombreprofesor: ""
+      nombreprofesor: "",
     };
   },
   created() {
@@ -56,12 +56,23 @@ export default {
   },
   methods: {
     async obtenerDatosPasarLista() {
-      const { idmateria, idgrupo, idprofesor, nombremateria, nombreprofesor, fecha, hora} = this.$route.query;// Obtener los datos de la ruta
+      const {
+        idmateria,
+        idgrupo,
+        idprofesor,
+        nombremateria,
+        nombreprofesor,
+        fecha,
+        hora,
+      } = this.$route.query; // Obtener los datos de la ruta
       try {
-        const response = await axios.get(`http://localhost:3000/datosPasarLista/${idmateria}/${idgrupo}/${idprofesor}`, {
-          params: { nombremateria, nombreprofesor, fecha, hora }, // Pasar la fecha y hora como parámetros de consulta
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `http://localhost:3000/datosPasarLista/${idmateria}/${idgrupo}/${idprofesor}`,
+          {
+            params: { nombremateria, nombreprofesor, fecha, hora }, // Pasar la fecha y hora como parámetros de consulta
+            withCredentials: true,
+          }
+        );
         this.datos = response.data;
         this.nombremateria = nombremateria; // Mostrar la materia obtenida en la interfaz
         this.nombreprofesor = nombreprofesor; // Mostrar el profesor obtenido en la interfaz
@@ -74,10 +85,44 @@ export default {
     obtenerFechaYHora() {
       const now = new Date();
       this.fecha = now.toISOString().split("T")[0];
-      this.hora = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+      this.hora = now.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
     },
+
+    //metodo para confirmar pase de lista,
     async pasarLista() {
-      
+      const { idmateria, idgrupo, idprofesor } = this.$route.query;
+
+      try {
+        const noControl = localStorage.getItem("noControl");
+        console.log("Valor de noControl:", noControl);
+        //añador la fecha y hora de registro de hoy
+        const fecha = new Date().toISOString().split("T")[0];
+        const hora = new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+        console.log("Fecha:", fecha);
+        console.log("Hora:", hora);
+        const response = await axios.post(`http://localhost:3000/pasarLista`, {
+          noControl: noControl,
+          idmateria,
+          idgrupo,
+          idprofesor,
+          fecha, // Enviar la fecha al backend
+          hora, // Enviar la hora al backend
+        });
+
+        console.log("Asistencia registrada exitosamente:", response.data);
+
+        this.$router.push("/main");
+      } catch (error) {
+        console.error("Error al registrar asistencia:", error);
+      }
     },
   },
 };

@@ -22,7 +22,7 @@ export default {
   methods: {
     joinGroup() {
       // Implementar la lógica para unirse a un grupo
-      alert("Funcionalidad para unirse a un grupo próximamente");
+      this.$router.push("/grupos");
     },
     aboutUs() {
       // Implementar la lógica para unirse a un grupo
