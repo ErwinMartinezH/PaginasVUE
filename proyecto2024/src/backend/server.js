@@ -56,7 +56,7 @@ app.post("/login", async (req, res) => {
       "SELECT * FROM alumnos WHERE noControl = ? AND password = ?",
       [noControl, password]
     );
-    conn.release();
+    conn.release();// Cerramos la base de datos
 
     if (rows.length > 0) {
       req.session.noControl = noControl; // Guardamos el noControl en la sesión del servidor
@@ -242,6 +242,46 @@ app.get("/asistencias/:idmateria/:idgrupo/:idprofesor", async (req, res) => {
   } catch (error) {
     console.error("Error al obtener asistencias: ", error);
     res.status(500).json({ error: "Error al obtener asistencias" });
+  }
+});
+
+app.post("/darseDeBaja", async (req, res) => {
+  const { noControl, idmateria, idgrupo, idprofesor } = req.body;
+
+  try {
+    const conn = await pool.getConnection();
+    await conn.query(
+      "DELETE FROM vtaalumnogrupos WHERE noControl = ? AND idmateria = ? AND idgrupo = ? AND idprofesor = ?",
+      [noControl, idmateria, idgrupo, idprofesor]
+    );
+    conn.release();
+    res.status(200).json({ message: "Dado de baja exitosamente" });
+  } catch (error) {
+    console.error("Error al dar de baja:", error);
+    res.status(500).json({ error: "Error al dar de baja" });
+  }
+});
+
+app.get("/grupos", async (req, res) => {
+  const noControl = req.query.noControl;
+  if (!noControl) {
+    return res.status(400).json({ error: "NoControl es requerido" });
+  }
+  try {
+    const conn = await pool.getConnection();
+    const rows = await conn.query(
+      "SELECT * FROM vtaalumnogrupos WHERE noControl = ?",
+      [noControl]
+    );
+    conn.release();
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({ error: "Grupos no encontrados" });
+    }
+  } catch (error) {
+    console.error("Error al obtener grupos: ", error);
+    res.status(500).json({ error: "Error al obtener grupos" });
   }
 });
 

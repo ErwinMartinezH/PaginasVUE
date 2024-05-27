@@ -18,7 +18,7 @@
             </div>
           </div>
           <div class="carousel-item">
-            <img src="../assets/gatito.jpg" class="d-block w-100" alt="..." />
+            <img src="../assets/panda.webp" class="d-block w-100" alt="..." />
             <div class="carousel-caption d-none d-md-block">
               <h5>Rosario del Carmen Cantarel Rosales</h5>
               <h4>E19021050</h4>
@@ -26,7 +26,7 @@
             </div>
           </div>
           <div class="carousel-item">
-            <img src="../assets/gatito.jpg" class="d-block w-100" alt="..." />
+            <img src="../assets/lagartija.png" class="d-block w-100" alt="..." />
             <div class="carousel-caption d-none d-md-block">
               <h5>Angel Martinez Prieto</h5>
               <h4>E18021570</h4>
@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="carousel-item">
-            <img src="../assets/gatito.jpg" class="d-block w-100" alt="..." />
+            <img src="../assets/panda.webp" class="d-block w-100" alt="..." />
             <div class="carousel-caption d-none d-md-block">
               <h5>Jade Anastacio Montalvo</h5>
               <h4>20021191</h4>

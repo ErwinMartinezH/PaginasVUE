@@ -182,7 +182,7 @@ table {
   margin-top: 20px;
   border-collapse: separate;
   border-spacing: 0;
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
   border-radius: 5px;
 }
 
@@ -190,9 +190,9 @@ th,
 td {
   padding: 15px;
   text-align: center;
-  border-bottom: 1px solid #ccc;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
 }
 
 button[type="button-primary"] {

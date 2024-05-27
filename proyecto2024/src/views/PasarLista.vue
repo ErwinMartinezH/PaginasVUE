@@ -1,6 +1,9 @@
 <template>
+  <div class="main-content">
   <div>
+    <div class="title">
     <h1>PASE DE LISTA</h1>
+    </div>
     <table>
       <tr>
         <td>Fecha</td>
@@ -33,6 +36,7 @@
     </table>
     <button @click="$router.push('/main')">Volver</button>
     <button @click="pasarLista()">Confirmar Pase de Lista</button>
+  </div>
   </div>
 </template>
 
@@ -130,10 +134,27 @@ export default {
 
 <style scoped>
 /* Estilos adicionales para la vista de pasar lista */
+
+.main-content{
+  padding: 20px;
+  margin-top: -10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
+}
+
+.title{
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: -70px;
+}
+
 h1 {
   text-align: center;
-  color: #000;
-  background: #fff;
+  color: #ffffff;
+  background: #000000;
   padding: 20px;
   margin-bottom: 10px;
   border-radius: 5px;
@@ -146,7 +167,7 @@ h1 {
 table {
   width: 50%;
   border-collapse: collapse;
-  border: 5px solid #ccc;
+  border: 5px solid #000000;
   margin: 0 auto;
   margin-top: 20px;
   margin-bottom: 20px;
