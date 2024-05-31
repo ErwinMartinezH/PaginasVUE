@@ -53,6 +53,7 @@
     color: white;
     margin-top: 10px;
     border-radius: 10px;
+    margin-bottom: 10px
   }
   
   .navbar-left,

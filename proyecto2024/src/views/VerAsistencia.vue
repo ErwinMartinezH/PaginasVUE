@@ -3,26 +3,31 @@
     <div class="main-content">
       <h1>Asistencias Registradas</h1>
       <NavBar :nombreCompleto="nombreCompleto" />
-      <table>
-        <thead>
-          <tr>
-            <th>Materia</th>
-            <th>Grupo</th>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Registro</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="asistencia in asistencias" :key="asistencia.reg_fecha">
-            <td>{{ asistencia.idmateria }}</td>
-            <td>{{ asistencia.idgrupo }}</td>
-            <td>{{ asistencia.fecha }}</td>
-            <td>{{ asistencia.hora }}</td>
-            <td>{{ asistencia.fecha }} {{ asistencia.hora }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <template v-if="asistencias.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Materia</th>
+              <th>Grupo</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Registro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="asistencia in asistencias" :key="asistencia.reg_fecha">
+              <td>{{ asistencia.idmateria }}</td>
+              <td>{{ asistencia.idgrupo }}</td>
+              <td>{{ asistencia.fecha }}</td>
+              <td>{{ asistencia.hora }}</td>
+              <td>{{ asistencia.fecha }} {{ asistencia.hora }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+      <template v-else>
+        <p>No hay asistencias registradas</p>
+      </template>
       <button @click="$router.push('/main')">Volver</button>
     </div>
   </div>

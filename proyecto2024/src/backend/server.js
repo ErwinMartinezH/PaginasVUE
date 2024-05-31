@@ -56,7 +56,7 @@ app.post("/login", async (req, res) => {
       "SELECT * FROM alumnos WHERE noControl = ? AND password = ?",
       [noControl, password]
     );
-    conn.release();// Cerramos la base de datos
+    conn.release(); // Cerramos la base de datos
 
     if (rows.length > 0) {
       req.session.noControl = noControl; // Guardamos el noControl en la sesión del servidor
@@ -136,13 +136,14 @@ app.get("/asistencias", async (req, res) => {
 /*Ruta para registrar asistencia*/
 app.post("/pasarLista", async (req, res) => {
   const { noControl, idmateria, idgrupo, idprofesor, fecha, hora } = req.body;
-
+  //unir fecha y hora
+  const horActual = `${fecha} ${hora}`;
   try {
     const conn = await pool.getConnection();
     // Insertamos la nueva asistencia
     await conn.query(
       "INSERT INTO asistencia (noControl, idmateria, idgrupo, idprofesor, fecha, hora, reg_fecha, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      [noControl, idmateria, idgrupo, idprofesor, fecha, hora, fecha, 1] // reg_fecha es la fecha actual
+      [noControl, idmateria, idgrupo, idprofesor, fecha, hora, horActual, 1] // reg_fecha es la fecha actual
     );
     conn.release();
     res.status(201).json({ message: "Asistencia registrada exitosamente" });
@@ -245,20 +246,22 @@ app.get("/asistencias/:idmateria/:idgrupo/:idprofesor", async (req, res) => {
   }
 });
 
+// Ruta para darse de baja
 app.post("/darseDeBaja", async (req, res) => {
-  const { noControl, idmateria, idgrupo, idprofesor } = req.body;
+  const { noControl, idmateria, idprofesor, idgrupo } = req.body;
 
   try {
     const conn = await pool.getConnection();
+    // Actualizamos el campo status en la tabla alumnogrupos
     await conn.query(
-      "DELETE FROM vtaalumnogrupos WHERE noControl = ? AND idmateria = ? AND idgrupo = ? AND idprofesor = ?",
-      [noControl, idmateria, idgrupo, idprofesor]
+      "UPDATE alumnogrupos SET status = 0 WHERE noControl = ? AND idmateria = ? AND idprofesor = ? AND idgrupo = ?",
+      [noControl, idmateria, idprofesor, idgrupo]
     );
     conn.release();
-    res.status(200).json({ message: "Dado de baja exitosamente" });
+    res.status(200).json({ message: "Alumno dado de baja exitosamente" });
   } catch (error) {
-    console.error("Error al dar de baja:", error);
-    res.status(500).json({ error: "Error al dar de baja" });
+    console.error("Error al dar de baja al alumno: ", error);
+    res.status(500).json({ error: "Error al dar de baja al alumno" });
   }
 });
 
@@ -285,7 +288,63 @@ app.get("/grupos", async (req, res) => {
   }
 });
 
+// Endpoint para obtener los grupos disponibles
+app.get("/gruposDisponibles", async (req, res) => {
+  try {
+    const conn = await pool.getConnection();
+    const rows = await pool.query(
+      "SELECT * FROM proyecto2024.vtaprofesorgrupos"
+    );
+    conn.release();
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({ error: "Grupos no encontrados" });
+    }
+  } catch (error) {
+    console.error("Error al obtener grupos: ", error);
+    res.status(500).json({ error: "Error al obtener grupos" });
+  }
+});
+
+// Endpoint para darse de alta en un grupo
+app.post("/darseDeAlta", async (req, res) => {
+  const { noControl, idprofesor, idmateria, idgrupo } = req.body;
+  try {
+    const conn = await pool.getConnection();
+   //si el alumno ya tenia un grupo y marca status = 0, debera cambiar el status a 1, de lo contrario se inserta en la tabla
+    if(await conn.query("SELECT * FROM alumnogrupos WHERE noControl = ? AND idmateria = ? AND idprofesor = ? AND idgrupo = ? AND status = 0", [noControl, idmateria, idprofesor, idgrupo])){
+      await conn.query(
+        "UPDATE alumnogrupos SET status = 1 WHERE noControl = ? AND idmateria = ? AND idprofesor = ? AND idgrupo = ?",
+        [noControl, idmateria, idprofesor, idgrupo]
+      );
+    }else{
+      await conn.query(
+        "INSERT INTO alumnogrupos (noControl, idmateria, idprofesor, idgrupo, status) VALUES (?, ?, ?, ?, ?)",
+        [noControl, idmateria, idprofesor, idgrupo, 1]
+      );
+    }
+    conn.release();
+    res.status(200).json({ message: "Alumno dado de alta exitosamente en el grupo" });
+  } catch (error) {
+    console.error("Error al dar de alta al alumno en el grupo:", error);
+    res.status(500).json({ error: "Error al dar de alta al alumno en el grupo" });
+  }
+});
+
+
 /*Ejecutamos el servidor en el puerto 3000*/
 app.listen(3000, () => {
   console.log("Servidor backend iniciado en el puerto 3000");
 });
+
+//recargar servidor en caso de error
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception: ", err);
+  process.exit(1);
+});
+
+//recarga servidor en automatico
+process.on("SIGINT", () => {
+  process.exit(0);
+})

@@ -6,58 +6,46 @@
       </div>
       <!-- NavBar aquí -->
       <NavBar :nombreCompleto="nombreCompleto" />
-      <table>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Gpo</th>
-            <th>Materia</th>
-            <th>Id</th>
-            <th>Profesor</th>
-            <th>Proceso</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="grupo in grupos"
-            :key="grupo.idmateria + grupo.idgrupo + grupo.idprofesor"
-          >
-            <td>{{ grupo.idmateria }}</td>
-            <td>{{ grupo.idgrupo }}</td>
-            <td>{{ grupo.nombremateria }}</td>
-            <td>{{ grupo.idprofesor }}</td>
-            <td>{{ grupo.nombreprofesor }} {{ grupo.apellidosprofesor }}</td>
-            <td>
-              <button
-                @click="
-                  pasarLista(
-                    grupo.idmateria,
-                    grupo.idgrupo,
-                    grupo.idprofesor,
-                    grupo.nombremateria,
-                    grupo.nombreprofesor
-                  )
-                "
-                type="button-primary"
-              >
-                Pasar Lista
-              </button>
-              <button
-                @click="
-                  verAsistencia(
-                    grupo.idmateria,
-                    grupo.idgrupo,
-                    grupo.idprofesor
-                  )
-                "
-                type="button-secondary"
-              >
-                Ver Asistencia
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <template v-if="grupos.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Gpo</th>
+              <th>Materia</th>
+              <th>Id</th>
+              <th>Profesor</th>
+              <th>Proceso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="grupo in grupos" :key="grupo.idmateria + grupo.idgrupo + grupo.idprofesor">
+              <td>{{ grupo.idmateria }}</td>
+              <td>{{ grupo.idgrupo }}</td>
+              <td>{{ grupo.nombremateria }}</td>
+              <td>{{ grupo.idprofesor }}</td>
+              <td>{{ grupo.nombreprofesor }} {{ grupo.apellidosprofesor }}</td>
+              <td>
+                <button @click="pasarLista(
+                  grupo.idmateria,
+                  grupo.idgrupo,
+                  grupo.idprofesor,
+                  grupo.nombremateria,
+                  grupo.nombreprofesor
+                )" type="button-primary">Pasar Lista</button>
+                <button @click="verAsistencia(
+                  grupo.idmateria,
+                  grupo.idgrupo,
+                  grupo.idprofesor
+                )" type="button-secondary">Ver Asistencia</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+      <template v-else>
+        <p>No hay grupos registrados para pase de asistencia</p>
+      </template>
     </div>
   </div>
 </template>
@@ -105,7 +93,7 @@ export default {
           "Error al obtener los datos del alumno o de la tabla de asistencia:",
           error
         );
-        this.$router.push("/loginAuth");
+       
       }
     }
   },

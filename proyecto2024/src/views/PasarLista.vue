@@ -1,42 +1,42 @@
 <template>
   <div class="main-content">
-  <div>
-    <div class="title">
-    <h1>PASE DE LISTA</h1>
+    <div>
+      <div class="title">
+        <h1>PASE DE LISTA</h1>
+      </div>
+      <table>
+        <tr>
+          <td>Fecha</td>
+          <td>{{ fecha }}</td>
+        </tr>
+        <tr>
+          <td>Hora</td>
+          <td>{{ hora }}</td>
+        </tr>
+        <tr>
+          <td>Materia</td>
+          <td>{{ nombremateria }}</td>
+        </tr>
+        <tr>
+          <td>Id Materia</td>
+          <td>{{ datos.idmateria }}</td>
+        </tr>
+        <tr>
+          <td>Gpo</td>
+          <td>{{ datos.idgrupo }}</td>
+        </tr>
+        <tr>
+          <td>Profesor</td>
+          <td>{{ nombreprofesor }}</td>
+        </tr>
+        <tr>
+          <td>Id Profesor</td>
+          <td>{{ datos.idprofesor }}</td>
+        </tr>
+      </table>
+      <button @click="$router.push('/main')">Volver</button>
+      <button @click="pasarLista()">Confirmar Pase de Lista</button>
     </div>
-    <table>
-      <tr>
-        <td>Fecha</td>
-        <td>{{ fecha }}</td>
-      </tr>
-      <tr>
-        <td>Hora</td>
-        <td>{{ hora }}</td>
-      </tr>
-      <tr>
-        <td>Materia</td>
-        <td>{{ nombremateria }}</td>
-      </tr>
-      <tr>
-        <td>Id Materia</td>
-        <td>{{ datos.idmateria }}</td>
-      </tr>
-      <tr>
-        <td>Gpo</td>
-        <td>{{ datos.idgrupo }}</td>
-      </tr>
-      <tr>
-        <td>Profesor</td>
-        <td>{{ nombreprofesor }}</td>
-      </tr>
-      <tr>
-        <td>Id Profesor</td>
-        <td>{{ datos.idprofesor }}</td>
-      </tr>
-    </table>
-    <button @click="$router.push('/main')">Volver</button>
-    <button @click="pasarLista()">Confirmar Pase de Lista</button>
-  </div>
   </div>
 </template>
 
@@ -69,6 +69,7 @@ export default {
         fecha,
         hora,
       } = this.$route.query; // Obtener los datos de la ruta
+
       try {
         const response = await axios.get(
           `http://localhost:3000/datosPasarLista/${idmateria}/${idgrupo}/${idprofesor}`,
@@ -77,23 +78,34 @@ export default {
             withCredentials: true,
           }
         );
-        this.datos = response.data;
-        this.nombremateria = nombremateria; // Mostrar la materia obtenida en la interfaz
-        this.nombreprofesor = nombreprofesor; // Mostrar el profesor obtenido en la interfaz
-        this.fecha = fecha; // Mostrar la fecha obtenida en la interfaz
-        this.hora = hora; // Mostrar la hora obtenida en la interfaz
+
+        // Verificar si se han obtenido datos correctamente
+        if (response.status === 200) {
+          this.datos = response.data;
+          this.nombremateria = nombremateria; // Mostrar la materia obtenida en la interfaz
+          this.nombreprofesor = nombreprofesor; // Mostrar el profesor obtenido en la interfaz
+        } else {
+          console.error("No se han encontrado datos para pasar lista.");
+          // Aquí puedes manejar la situación cuando no se encuentren datos
+        }
       } catch (error) {
         console.error("Error al obtener datos para pasar lista:", error);
+        // Manejar el error según tus necesidades
       }
     },
+
     obtenerFechaYHora() {
-      const now = new Date();
-      this.fecha = now.toISOString().split("T")[0];
-      this.hora = now.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
+      //obtenemos la fecha y hora actual del sistema
+      const fecha = new Date();
+      const dia = fecha.getDate();
+      const mes = fecha.getMonth() + 1;
+      const anio = fecha.getFullYear();
+      const hora = fecha.getHours();
+      const minuto = fecha.getMinutes();
+      const segundo = fecha.getSeconds();
+      this.fecha = `${dia}/${mes}/${anio}`;
+      this.horas = `${hora}:${minuto}:${segundo}`;
+      this.hora = `${hora}:${minuto}`;
     },
 
     //metodo para confirmar pase de lista,
@@ -102,23 +114,23 @@ export default {
 
       try {
         const noControl = localStorage.getItem("noControl");
-        console.log("Valor de noControl:", noControl);
-        //añador la fecha y hora de registro de hoy
-        const fecha = new Date().toISOString().split("T")[0];
-        const hora = new Date().toLocaleTimeString([], {
+        const fecha = new Date(); // Get current date
+        const formattedDate = fecha.toISOString().slice(0, 10); // Format to YYYY-MM-DD
+
+        const hora = fecha.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
-          hour12: false,
-        });
-        console.log("Fecha:", fecha);
-        console.log("Hora:", hora);
+        }); // Get current time
+        const reg_fecha = fecha.toISOString().slice(0, 19).replace("T", " "); // Format to YYYY-MM-DD HH:MM:SS
+
         const response = await axios.post(`http://localhost:3000/pasarLista`, {
-          noControl: noControl,
+          noControl,
           idmateria,
           idgrupo,
           idprofesor,
-          fecha, // Enviar la fecha al backend
-          hora, // Enviar la hora al backend
+          fecha: formattedDate, // Send formatted date
+          hora,
+          regFecha: reg_fecha,
         });
 
         console.log("Asistencia registrada exitosamente:", response.data);
@@ -128,14 +140,16 @@ export default {
         console.error("Error al registrar asistencia:", error);
       }
     },
+
   },
+
 };
 </script>
 
 <style scoped>
 /* Estilos adicionales para la vista de pasar lista */
 
-.main-content{
+.main-content {
   padding: 20px;
   margin-top: -10px;
   background-color: #f5f5f5;
@@ -144,7 +158,7 @@ export default {
   border: 1px solid #ccc;
 }
 
-.title{
+.title {
   text-align: center;
   font-size: 24px;
   font-weight: bold;

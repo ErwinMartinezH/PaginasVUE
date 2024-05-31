@@ -1,35 +1,40 @@
 <template>
   <div>
     <div class="main-content">
-    <div class="title-grupos">
-    <h1>Tus grupos son:</h1>
-    </div>
-    <NavBar :nombreCompleto="nombreCompleto" />
-    <table>
-      <thead>
-        <tr>
-          <th>ID Materia</th>
-          <th>Gpo</th>
-          <th>Materia</th>
-          <th>ID Profesor</th>
-          <th>Profesor</th>
-          <th>Proceso</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="grupo in grupos" :key="grupo.idmateria + grupo.idgrupo + grupo.idprofesor">
-          <td>{{ grupo.idmateria }}</td>
-          <td>{{ grupo.idgrupo }}</td>
-          <td>{{ grupo.nombremateria }}</td>
-          <td>{{ grupo.idprofesor }}</td>
-          <td>{{ grupo.nombreprofesor }} {{ grupo.apellidosprofesor }}</td>
-          <td>
-            <button @click="pasarLista(grupo)">Pasar Lista</button>
-            <button @click="darDeBaja(grupo)" type="delete-button">Dar de baja</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="title-grupos">
+        <h1>Tus grupos son:</h1>
+      </div>
+      <NavBar :nombreCompleto="nombreCompleto" />
+      <table>
+        <thead>
+          <tr>
+            <th>ID Materia</th>
+            <th>Gpo</th>
+            <th>Materia</th>
+            <th>ID Profesor</th>
+            <th>Profesor</th>
+            <th>Proceso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="grupo in grupos"
+            :key="grupo.idmateria + grupo.idgrupo + grupo.idprofesor"
+          >
+            <td>{{ grupo.idmateria }}</td>
+            <td>{{ grupo.idgrupo }}</td>
+            <td>{{ grupo.nombremateria }}</td>
+            <td>{{ grupo.idprofesor }}</td>
+            <td>{{ grupo.nombreprofesor }} {{ grupo.apellidosprofesor }}</td>
+            <td>
+              <button @click="pasarLista(grupo)">Pasar Lista</button>
+              <button @click="darDeBaja(grupo)" type="delete-button">
+                Dar de baja
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -37,7 +42,7 @@
 <script>
 import NavBar from "./NavBar2.vue";
 import axios from "axios";
-export default { 
+export default {
   name: "GruposAlt",
   components: {
     NavBar,
@@ -72,9 +77,12 @@ export default {
         return;
       }
       try {
-        const response = await fetch(`http://localhost:3000/grupos?noControl=${noControl}`, {
-          credentials: "include"
-        });
+        const response = await fetch(
+          `http://localhost:3000/grupos?noControl=${noControl}`,
+          {
+            credentials: "include",
+          }
+        );
         if (!response.ok) {
           throw new Error("Error al obtener los grupos");
         }
@@ -85,68 +93,70 @@ export default {
       }
     },
     async pasarLista(grupo) {
-      const fecha = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-      const hora = new Date().toTimeString().split(" ")[0]; // HH:MM:SS
-      const noControl = localStorage.getItem("noControl");
-
       try {
-        const response = await fetch("http://localhost:3000/pasarLista", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            noControl,
+        const now = new Date();
+        const fecha = now.toISOString().split("T")[0];
+        const hora = now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+
+        this.$router.push({
+          path: "/pasarlista",
+          query: {
             idmateria: grupo.idmateria,
             idgrupo: grupo.idgrupo,
             idprofesor: grupo.idprofesor,
+            nombremateria: grupo.nombremateria,
+            nombreprofesor: grupo.nombreprofesor + grupo.apellidosprofesor,
             fecha,
-            hora
-          })
+            hora,
+          },
         });
-
-        if (response.ok) {
-          alert("Asistencia registrada exitosamente");
-        } else {
-          throw new Error("Error al registrar asistencia");
-        }
       } catch (error) {
         console.error("Error al pasar lista:", error);
       }
     },
+    /*
+     Función para dar de baja del grupo, se cambia el status a 0 de la tabla
+    alumnogrupos*/
     async darDeBaja(grupo) {
-      const noControl = localStorage.getItem("noControl");
+    const noControl = localStorage.getItem("noControl");
+    const idmateria = grupo.idmateria;
+    const idprofesor = grupo.idprofesor;
+    const idgrupo = grupo.idgrupo;
 
-      try {
-        const response = await fetch("http://localhost:3000/darseDeBaja", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            noControl,
-            idmateria: grupo.idmateria,
-            idgrupo: grupo.idgrupo,
-            idprofesor: grupo.idprofesor
-          })
-        });
+    try {
+      const response = await fetch("http://localhost:3000/darseDeBaja", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          noControl,
+          idmateria,
+          idprofesor,
+          idgrupo,
+        }),
+      });
 
-        if (response.ok) {
-          alert("Te has dado de baja exitosamente");
-          this.obtenerGrupos(); // Refresca la lista de grupos
-        } else {
-          throw new Error("Error al dar de baja");
-        }
-      } catch (error) {
-        console.error("Error al dar de baja:", error);
+      if (response.ok) {
+        alert("Alumno dado de baja exitosamente");
+        // Actualizar la lista de grupos después de dar de baja
+        this.obtenerGrupos();
+      } else {
+        throw new Error("Error al dar de baja al alumno");
       }
+    } catch (error) {
+      console.error("Error al dar de baja al alumno:", error);
     }
+  },
   },
   mounted() {
     this.obtenerGrupos();
-  }
+  },
 };
 </script>
 
@@ -154,7 +164,7 @@ export default {
 table {
   margin-top: 20px;
   width: 100%;
-  border-collapse: collapse;  
+  border-collapse: collapse;
 }
 
 th,
@@ -165,7 +175,7 @@ td {
   border-right: 1px solid #000000;
   border-left: 1px solid #000000;
   border-top: 1px solid #000000;
-  
+
   font-size: 15px;
 }
 
@@ -193,7 +203,6 @@ button {
 
 button[type="delete-button"] {
   background-color: #f44336;
-  
 }
 
 button:hover[type="delete-button"] {
@@ -211,7 +220,7 @@ button:last-child {
 .title-grupos {
   text-align: center;
   margin-top: -20px;
-  margin-bottom:10px;
+  margin-bottom: 10px;
   color: #ffffff;
   background: #000;
   padding: 20px;

@@ -10,35 +10,35 @@
       >
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img src="../assets/gatito.jpg" class="d-block w-100" alt="..." />
+            <img src="../assets/erwin.jpg" class="d-block w-100" alt="..." />
             <div class="carousel-caption d-none d-md-block">
               <h5>Martinez Herrera Erwin Brown</h5>
               <h4>20021244</h4>
-              <p>Programador fullstack</p>
+              <p>Programador Fullstack</p>
             </div>
           </div>
           <div class="carousel-item">
-            <img src="../assets/panda.webp" class="d-block w-100" alt="..." />
+            <img src="../assets/rosario.jpg" class="d-block w-100" alt="..." />
             <div class="carousel-caption d-none d-md-block">
               <h5>Rosario del Carmen Cantarel Rosales</h5>
               <h4>E19021050</h4>
-              <p>Programador</p>
+              <p>Programador FrontEnd</p>
             </div>
           </div>
           <div class="carousel-item">
-            <img src="../assets/lagartija.png" class="d-block w-100" alt="..." />
+            <img src="../assets/angel.jpg" class="d-block w-100" alt="..." />
             <div class="carousel-caption d-none d-md-block">
               <h5>Angel Martinez Prieto</h5>
               <h4>E18021570</h4>
-              <p>Programador</p>
+              <p>Programador, Documentador</p>
             </div>
           </div>
           <div class="carousel-item">
-            <img src="../assets/panda.webp" class="d-block w-100" alt="..." />
+            <img src="../assets/jade.jpg" class="d-block w-100" alt="..." />
             <div class="carousel-caption d-none d-md-block">
               <h5>Jade Anastacio Montalvo</h5>
               <h4>20021191</h4>
-              <p>Programador</p>
+              <p>Documentador, Programador</p>
             </div>
           </div>
         </div>
@@ -102,6 +102,15 @@ h1 {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin-top: -62px;
 }
+
+h4{
+  color: #000;
+}
+
+h5{
+  color: #000;
+}
+
 .carousel-item {
   display: inline-block;
   margin-left: 10px;
